@@ -1,49 +1,36 @@
-interface PluginContext<
-  TParams extends Record<string, any> = Record<string, any>,
-> {
-  params: TParams;
-}
+import { definePlugin, defineEvent } from "./types";
 
-type PluginEvent<TParams extends Record<string, any>> = {
-  name: string;
-  description: string;
-  params: TParams;
-  fn: (ctx: PluginContext<TParams>) => void;
-};
+const fooEvent = defineEvent({
+  name: "timer",
+  description: "Starts a timer and ends event when timer completes.",
+  parameterDefs: {
+    message: {
+      description: "A greeting message.",
+      type: "string",
+      defaultValue: "Hello, world!",
+    },
+    duration: {
+      description: "Duration in milliseconds.",
+      type: "number",
+      defaultValue: 1000,
+    },
+    enabled: {
+      description: "Whether the timer is enabled.",
+      type: "boolean",
+    },
+  },
+  fn: (params, ctx) => {
+    params.message; // ✅ string
+    params.duration; // ✅ number
+    params.enabled; // ✅ boolean
+    // params.foo; // ❌ TS error
+  },
+});
 
-// Helper to create an event with proper type inference between params and fn
-export function defineEvent<const TParams extends Record<string, any>>(event: {
-  name: string;
-  description: string;
-  params: TParams;
-  fn: (ctx: PluginContext<TParams>) => void;
-}): PluginEvent<TParams> {
-  return event;
-}
-
-interface Plugin {
-  name: string;
-  description: string;
-  version: string;
-  events: PluginEvent<any>[];
-}
-
-export default {
+export default definePlugin({
   name: "__PLUGIN_NAME__",
   description: "A brief description my plugin.",
   version: "0.1.0",
 
-  events: [
-    defineEvent({
-      name: "timer",
-      description: "Starts a timer and ends event when timer completes.",
-      params: {
-        hello: "hello",
-      },
-      fn: (ctx) => {
-        const { params } = ctx;
-        params.hello; // ✅ typed
-      },
-    }),
-  ],
-} satisfies Plugin;
+  events: [fooEvent],
+});
