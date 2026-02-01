@@ -1,8 +1,8 @@
 import {
   definePlugin,
   defineEvent,
-  EventFn,
-  type ParameterDefs,
+  PluginEventHandler,
+  type ParamSchemas,
   type PluginContext,
 } from "./types";
 
@@ -22,10 +22,10 @@ const timerParams = {
     description: "Whether the timer is enabled.",
     type: "boolean",
   },
-} satisfies ParameterDefs;
+} satisfies ParamSchemas;
 
 // 2. Define the function separately with proper typing
-const fnExample: EventFn<typeof timerParams> = (params, ctx) => {
+const fnExample: PluginEventHandler<typeof timerParams> = (params, ctx) => {
   params.message; // ✅ string
   params.duration; // ✅ number
   params.enabled; // ✅ boolean
@@ -51,7 +51,7 @@ const testEvent = defineEvent({
   name: "timer",
   description: "Starts a timer and ends event when timer completes.",
   parameterDefs: timerParams,
-  fn: fnExample,
+  execute: fnExample,
   // fn: explicitelyTypedFn, // ❌ TS error since param types don't match inferred types by timer Params
 });
 

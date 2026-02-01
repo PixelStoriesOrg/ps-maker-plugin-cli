@@ -16,78 +16,77 @@ export interface PluginContext {
   player: any;
 }
 
-interface ParameterDefBase {
+interface ParamSchemaBase {
   description: string;
 }
-interface StringParameter extends ParameterDefBase {
+interface StringParam extends ParamSchemaBase {
   type: "string";
   defaultValue?: string;
 }
-interface NumberParameter extends ParameterDefBase {
+interface NumberParam extends ParamSchemaBase {
   type: "number";
   defaultValue?: number;
 }
-interface BooleanParameter extends ParameterDefBase {
+interface BooleanParam extends ParamSchemaBase {
   type: "boolean";
   defaultValue?: boolean;
 }
-export type ParameterDef = StringParameter | NumberParameter | BooleanParameter;
+export type ParamSchema = StringParam | NumberParam | BooleanParam;
 
 // Map the "type" string to actual TypeScript types
-type TypeMap = {
+type ParamTypeMap = {
   string: string;
   number: number;
   boolean: boolean;
+  // TODO: add the image, audio, npc, etc types
 };
 
-export type ParameterDefs = Record<string, ParameterDef>;
+export type ParamSchemas = Record<string, ParamSchema>;
 
 // Infer the TS type from a ParameterDef's "type" field
-type InferParamType<T extends ParameterDef> = T extends { type: infer U }
-  ? U extends keyof TypeMap
-    ? TypeMap[U]
+type InferParamType<T extends ParamSchema> = T extends { type: infer U }
+  ? U extends keyof ParamTypeMap
+    ? ParamTypeMap[U]
     : never
   : never;
 
 // Convert parameterDefs object to the params object type
-type InferParams<T extends ParameterDefs> = {
+type InferParams<T extends ParamSchemas> = {
   [K in keyof T]: InferParamType<T[K]>;
 };
 
 // Helper type for defining event functions separately
-export type EventFn<T extends ParameterDefs> = (
+export type PluginEventHandler<T extends ParamSchemas> = (
   params: InferParams<T>,
   ctx: PluginContext,
 ) => void;
 
-export interface Event<T extends ParameterDefs = ParameterDefs> {
+export interface PluginEvent<T extends ParamSchemas = ParamSchemas> {
   name: string;
   description: string;
   parameterDefs: T;
-  fn: (params: InferParams<T>, ctx: PluginContext) => void;
+  execute: PluginEventHandler<T>;
 }
 
-// Helper to create a properly typed event (preserves literal types)
-export function defineEvent<const T extends ParameterDefs>(event: {
-  name: string;
-  description: string;
-  parameterDefs: T;
-  fn: (
-    params: { [K in keyof T]: InferParamType<T[K]> },
-    ctx: PluginContext,
-  ) => void;
-}): Event<T> {
+// Helper to create a properly typed event with inference (preserves literal types)
+export function defineEvent<const T extends ParamSchemas>(
+  event: PluginEvent<T>,
+): PluginEvent<T> {
   return event;
 }
 
-export interface Plugin<E extends readonly Event<any>[] = Event<any>[]> {
+export interface Plugin<
+  E extends readonly PluginEvent<any>[] = PluginEvent<any>[],
+> {
   name: string;
   description: string;
   version: string;
   events: E;
 }
 
-export function definePlugin<const E extends readonly Event<any>[]>(plugin: {
+export function definePlugin<
+  const E extends readonly PluginEvent<any>[],
+>(plugin: {
   name: string;
   description: string;
   version: string;
