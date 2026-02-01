@@ -31,6 +31,5 @@ export default definePlugin({
   name: "__PLUGIN_NAME__",
   description: "A brief description my plugin.",
   version: "0.1.0",
-
   events: [fooEvent],
 });
