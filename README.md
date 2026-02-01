@@ -7,8 +7,6 @@ A CLI tool to create and build Pixel Stories Maker plugins.
 ```bash
 ps-maker-plugin create my-plugin
 cd my-plugin
-npm install
-npm run build
 ```
 
 ## Commands
