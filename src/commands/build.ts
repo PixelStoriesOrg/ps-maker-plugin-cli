@@ -17,16 +17,27 @@ export async function build(options: BuildOptions): Promise<void> {
     process.exit(1);
   }
 
-  // Read package.json for plugin name
-  const pkgPath = path.resolve(cwd, "package.json");
+  // Parse definePlugin call from src/index.ts to get plugin name
   let pluginName = "plugin";
-  if (fs.existsSync(pkgPath)) {
-    const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
-    pluginName = pkg.name || "plugin";
+  try {
+    const content = fs.readFileSync(entryPoint, "utf8");
+    const nameMatch = content.match(/name:\s*["']([^"']+)["']/);
+    if (nameMatch) {
+      pluginName = nameMatch[1];
+    }
+  } catch (error) {
+    console.log(
+      pc.yellow(
+        `Warning: Could not parse plugin name from ${entryPoint}, using default.`,
+      ),
+    );
   }
 
-  // Sanitize plugin name for safe filename usage (keep hyphens, alphanumeric, dots, underscores)
-  const safePluginName = pluginName.replace(/[^a-zA-Z0-9._-]/g, "_");
+  // Sanitize plugin name for safe filename usage (convert to kebab-case)
+  const safePluginName = pluginName
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
   const outfilePath = path.join(outdir, `${safePluginName}.ps-maker.js`);
 
   try {

@@ -1,5 +1,5 @@
 {
-  "name": "__PLUGIN_NAME__",
+  "name": "ps-maker-plugin",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -10,6 +10,6 @@
     "@ps-maker/plugin-api": "^0.0.3"
   },
   "devDependencies": {
-    "@ps-maker/plugin-cli": "^0.1.2"
+    "@ps-maker/plugin-cli": "^0.1.3"
   }
 }

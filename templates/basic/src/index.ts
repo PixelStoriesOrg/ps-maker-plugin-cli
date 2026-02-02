@@ -19,7 +19,7 @@ const myEvent = defineEvent({
 
 export default definePlugin({
   name: "My Plugin",
-  description: "A brief description my plugin.",
+  description: "A brief description of my plugin.",
   version: "0.1.0",
   events: [myEvent],
 

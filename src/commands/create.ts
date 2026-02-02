@@ -2,54 +2,70 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { spawn } from "child_process";
-import prompts from "prompts";
+import * as clack from "@clack/prompts";
 import pc from "picocolors";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export async function create(targetDir = "."): Promise<void> {
-  const { pluginName } = await prompts({
-    type: "text",
-    name: "pluginName",
-    message: "Plugin name:",
-    initial: path.basename(path.resolve(targetDir)),
+export async function create(targetDir?: string): Promise<void> {
+  clack.intro(pc.cyan("Welcome to the PS Maker Plugin CLI!"));
+
+  const projectDir = await clack.text({
+    message: "Where would you like your project to be created?",
+    placeholder: "(hit Enter to use './')",
+    defaultValue: targetDir || "./",
   });
 
-  if (!pluginName) {
-    console.log(pc.red("Cancelled."));
+  if (clack.isCancel(projectDir)) {
+    clack.cancel("Operation cancelled.");
     process.exit(1);
   }
 
-  const dest = path.resolve(targetDir);
+  const dest = path.resolve(projectDir as string);
+
+  // Check if directory exists and is not empty
+  if (fs.existsSync(dest) && fs.readdirSync(dest).length > 0) {
+    console.log(
+      pc.red(`Error: Directory ${projectDir} already exists and is not empty.`),
+    );
+    process.exit(1);
+  }
+
   // When bundled by tsup, __dirname is 'dist/', so ../templates gets to package root templates
   const templateDir = path.resolve(__dirname, "../templates/basic");
 
   fs.mkdirSync(dest, { recursive: true });
 
-  copyDir(templateDir, dest, {
-    __PLUGIN_NAME__: pluginName,
-  });
+  copyDir(templateDir, dest, {});
 
-  console.log(pc.green("✔ Plugin starter template created!"));
-  console.log();
+  const spinner = clack.spinner();
+  spinner.start("Creating plugin template...");
+  spinner.stop("Plugin starter template created");
 
   // Auto install dependencies
-  console.log(pc.cyan("Installing dependencies..."));
-  await runCommand("npm", ["install"], dest);
-  console.log(pc.green("✔ Dependencies installed!"));
-  console.log();
+  const installSpinner = clack.spinner();
+  installSpinner.start("Installing dependencies...");
 
-  console.log(
-    "You're all set to start creating your plugin! Below are some helpful resources:",
+  await runCommand("npm", ["install"], dest);
+
+  clack.log.message(""); // add new line
+
+  installSpinner.stop("Dependencies installed!");
+
+  clack.note(
+    [
+      `1. ${pc.cyan(`cd ${projectDir}`)}`,
+      `2. Edit ${pc.cyan("src/index.ts")} to create your plugin`,
+      `3. ${pc.cyan("npm run build")} to build`,
+      ``,
+      `Plugin Docs → ${pc.cyan("https://pixelstories.io/docs/plugins/")}`,
+    ].join("\n"),
+    "Next steps",
+    { format: (line) => line },
   );
-  console.log(
-    `  Getting started guide: ${pc.cyan("https://pixelstories.io/docs/plugins/getting-started")}`,
-  );
-  console.log(
-    `  PS Maker plugin docs: ${pc.cyan("https://pixelstories.io/docs/plugins/")}`,
-  );
-  console.log();
+
+  clack.outro(`You're all set!`);
 }
 
 function copyDir(
@@ -78,7 +94,6 @@ function runCommand(cmd: string, args: string[], cwd: string): Promise<void> {
   return new Promise((resolve, reject) => {
     const child = spawn(cmd, args, {
       cwd,
-      stdio: "inherit",
       shell: true,
     });
 
