@@ -1,6 +1,6 @@
 {
   "name": "@ps-maker/plugin-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Create and build Pixel Stories Maker plugins",
   "author": "PixelStoriesOrg",
   "license": "MIT",
@@ -26,7 +26,6 @@
     "node": ">=18.0.0"
   },
   "bin": {
-    "create-ps-maker-plugin": "dist/index.js",
     "ps-maker-plugin": "dist/index.js"
   },
   "type": "module",

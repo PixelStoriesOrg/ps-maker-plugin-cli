@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "ps-maker-plugin build"
+    "build": "npx @ps-maker/plugin-cli build"
   },
   "dependencies": {
-    "@ps-maker/plugin-api": "^0.0.1"
+    "@ps-maker/plugin-api": "^0.0.3"
   }
 }

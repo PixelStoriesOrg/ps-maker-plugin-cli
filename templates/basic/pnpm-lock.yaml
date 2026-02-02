@@ -1,0 +1,22 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      '@ps-maker/plugin-api':
+        specifier: ^0.0.1
+        version: 0.0.1
+
+packages:
+
+  '@ps-maker/plugin-api@0.0.1':
+    resolution: {integrity: sha512-FaIo9xDJBWDLp3Yuw5+r6egmDlqq1KJPNK4Df3OJvHOuKF60V+7SUZfRzqO16tS5UchZ7BPBAma0g4p2edBuVQ==}
+
+snapshots:
+
+  '@ps-maker/plugin-api@0.0.1': {}
