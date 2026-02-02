@@ -21,7 +21,10 @@ export async function build(options: BuildOptions): Promise<void> {
   let pluginName = "plugin";
   try {
     const content = fs.readFileSync(entryPoint, "utf8");
-    const nameMatch = content.match(/name:\s*["']([^"']+)["']/);
+    // Match the name property specifically within definePlugin call
+    const nameMatch = content.match(
+      /definePlugin\s*\(\s*\{[^}]*name:\s*["']([^"']+)["']/s,
+    );
     if (nameMatch) {
       pluginName = nameMatch[1];
     }

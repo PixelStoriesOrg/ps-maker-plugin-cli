@@ -10,6 +10,6 @@
     "@ps-maker/plugin-api": "^0.0.3"
   },
   "devDependencies": {
-    "@ps-maker/plugin-cli": "^0.1.4"
+    "@ps-maker/plugin-cli": "^0.1.6"
   }
 }

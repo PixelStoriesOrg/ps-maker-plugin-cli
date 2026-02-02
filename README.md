@@ -37,11 +37,11 @@ Builds your plugin from `src/index.ts` into a single bundled file.
 # In project root
 npm run build
 
-# Or using command if installed in project
-npx ps-maker-plugin build
-
-# Or using npx without installing
+# Or using npx
 npx @ps-maker/plugin-cli build
+
+# Or using command directly with it installed in project
+npx ps-maker-plugin build
 ```
 
 By default, the output is written to `dist/`.
@@ -56,4 +56,4 @@ By default, the output is written to `dist/`.
 
 Plugin docs and API reference:
 
-👉 [https://pixelstories.io/docs/plugins/](https://pixelstories.io/docs/plugins/)
+[https://pixelstories.io/docs/plugins/](https://pixelstories.io/docs/plugins/)
