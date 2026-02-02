@@ -1,6 +1,6 @@
 {
   "name": "@ps-maker/plugin-cli",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Create and build Pixel Stories Maker plugins",
   "author": "PixelStoriesOrg",
   "license": "MIT",
