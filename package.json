@@ -1,7 +1,30 @@
 {
-  "name": "ps-maker-plugin-cli",
+  "name": "@ps-maker/plugin-cli",
   "version": "0.1.0",
   "description": "Create and build Pixel Stories Maker plugins",
+  "author": "PixelStoriesOrg",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PixelStoriesOrg/ps-maker-plugin-cli.git"
+  },
+  "homepage": "https://github.com/PixelStoriesOrg/ps-maker-plugin-cli#readme",
+  "bugs": {
+    "url": "https://github.com/PixelStoriesOrg/ps-maker-plugin-cli/issues"
+  },
+  "keywords": [
+    "pixel-stories",
+    "ps-maker",
+    "plugin",
+    "cli",
+    "scaffold",
+    "template",
+    "create",
+    "build"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "bin": {
     "create-ps-maker-plugin": "dist/index.js",
     "ps-maker-plugin": "dist/index.js"
@@ -9,7 +32,8 @@
   "type": "module",
   "files": [
     "dist",
-    "templates"
+    "templates",
+    "README.md"
   ],
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts",
@@ -29,4 +53,3 @@
     "typescript": "^5.7.0"
   }
 }
-
