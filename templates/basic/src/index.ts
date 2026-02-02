@@ -1,8 +1,8 @@
 import { defineEvent, definePlugin } from "@ps-maker/plugin-api";
 
-const fooEvent = defineEvent({
-  name: "timer",
-  description: "Starts a timer and ends event when timer completes.",
+const myEvent = defineEvent({
+  name: "My Event",
+  description: "My amazing event.",
   parameterDefs: {
     message: {
       description: "A greeting message.",
@@ -11,13 +11,18 @@ const fooEvent = defineEvent({
     },
   },
   execute: (params, ctx) => {
-    params.message;
+    // this is where the event logic goes
+    // for example, log the message parameter
+    console.log(params.message);
   },
 });
 
 export default definePlugin({
-  name: "__PLUGIN_NAME__",
+  name: "My Plugin",
   description: "A brief description my plugin.",
   version: "0.1.0",
-  events: [fooEvent],
+  events: [myEvent],
+
+  // optional fields
+  // author: "Author Name",
 });
