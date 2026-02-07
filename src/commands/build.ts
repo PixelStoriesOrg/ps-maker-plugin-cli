@@ -2,6 +2,7 @@ import path from "path";
 import fs from "fs";
 import * as esbuild from "esbuild";
 import pc from "picocolors";
+import semver from "semver";
 
 interface BuildOptions {
   outdir: string;
@@ -17,8 +18,9 @@ export async function build(options: BuildOptions): Promise<void> {
     process.exit(1);
   }
 
-  // Parse definePlugin call from src/index.ts to get plugin name
+  // Parse definePlugin call from src/index.ts to get plugin name and version
   let pluginName = "plugin";
+  let pluginVersion: string | undefined;
   try {
     const content = fs.readFileSync(entryPoint, "utf8");
     // Match the name property specifically within definePlugin call
@@ -28,12 +30,36 @@ export async function build(options: BuildOptions): Promise<void> {
     if (nameMatch) {
       pluginName = nameMatch[1];
     }
+    const versionMatch = content.match(
+      /definePlugin\s*\(\s*\{[^}]*version:\s*["']([^"']+)["']/s,
+    );
+    if (versionMatch) {
+      pluginVersion = versionMatch[1];
+    }
   } catch (error) {
     console.log(
       pc.yellow(
         `Warning: Could not parse plugin name from ${entryPoint}, using default.`,
       ),
     );
+  }
+
+  if (!pluginVersion) {
+    console.log(
+      pc.red(
+        `Error: Missing "version" field in definePlugin(). A valid semver version is required (e.g. "1.0.0").`,
+      ),
+    );
+    process.exit(1);
+  }
+
+  if (!semver.valid(pluginVersion)) {
+    console.log(
+      pc.red(
+        `Error: Invalid plugin version: "${pluginVersion}". Expected semver (e.g. 1.0.0, 0.2.1, 1.0.0-beta.1). `,
+      ),
+    );
+    process.exit(1);
   }
 
   // Sanitize plugin name for safe filename usage (convert to kebab-case)
